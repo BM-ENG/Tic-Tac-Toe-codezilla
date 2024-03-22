@@ -1,11 +1,20 @@
 
+import types
 from inquirer import Text, prompt, List,Checkbox
 from re import match
 
+intro:str ="""
 
+
+▀█▀ █ █▀▀   ▀█▀ ▄▀█ █▀▀   ▀█▀ █▀█ █▀▀
+░█░ █ █▄▄   ░█░ █▀█ █▄▄   ░█░ █▄█ ██▄
+
+
+
+"""
 
 class Player:
-    SYMBOL = ["X","O"]
+    SYMBOL:list[str] = ["✘","⭕"]
 
     def __init__(self) -> None:
         self.name :str = ""
@@ -15,8 +24,9 @@ class Player:
     def ChooseName(self) :
         name = [
             Text('Name', message="What's your Name",
-                        validate=lambda _, x: match('[A-Za-z]', x))
+                        validate=lambda _, x: match('^[a-zA-Z]+$', x))
                     ]
+
         self.name = prompt(name)['Name']
 
     def ChooseSymbol(self) :
@@ -53,20 +63,29 @@ class Menu:
         if choice["main"] == "Setting Time":
             time = [
               Checkbox('Time',
-                                message="How long time do you wnat",
+                                message="Enter space to choose time long in game",
                                 choices=Menu.TIME,
                                 ),
             ]
             choice_itme = prompt(time)
             self.time = sum(choice_itme["Time"])
+            return prompt(main)['main']
+        return choice['main']
 
-        print(self.time)
+
+
 
 
 
 
     def DisplayEndMenu(self):
-        pass
+        main = [
+          List('main',
+                        message="Game Over",
+                        choices=["Restart Game","Quit Game"],
+                    )
+                ]
+        return  prompt(main)["main"]
 
 
 
@@ -77,18 +96,48 @@ class Menu:
 
 
 class Board:
-    def __init__(self,board:list) -> None:
-        self.board = []
+    BOARD:str = """
 
-    def DisplayBoard(self):
-        pass
+                 ⁣1 ❕2 ❕3
+                 ➖➕➖➕➖
+                 6 ❕⁣5 ❕4
+                 ➖➕➖➕➖
+                 7 ❕8 ❕9
+
+    """
+    def __init__(self) -> None:
+        self.zone: dict[str,str] = {
+                      "1":"","2":"✘","3":"",
+                      "4":"✘","5":"","6":"",
+                      "7":"","8":"✘","9":""
+                     }
+        self.board:str ="""
+                     ⁣1 ❕2 ❕3
+                     ➖➕➖➕➖
+                     6 ❕⁣5 ❕4
+                     ➖➕➖➕➖
+                     7 ❕8 ❕9
+                     """
+
+    def UpdateBoard(self):
+        for position,symbol in self.zone.items():
+            if symbol:
+                self.board=self.board.replace(position,symbol)
+
+
 
 
     def ResetBoard(self):
-        pass
+        self.zone = {
+                      "1":"","2":"","3":"",
+                      "4":"","5":"","6":"",
+                      "7":"","8":"","9":""
+                     }
+        self.board = self.BOARD
 
-    def UpdateBoard(self):
-        pass
+
+    def DisplayBoard(self):
+        return self.board
 
 
 
@@ -100,11 +149,11 @@ class Board:
 
 
 class Game:
-    def __init__(self,board,players:list,menu,current_player:int) -> None:
-        self.board = board
+    def __init__(self) -> None:
+        self.board = "board"
         self.players = []
-        self.menu = menu
-        self.current_player = current_player
+        self.menu = "menu"
+        self.current_player = "current_player"
     def StarGame(self):
         pass
 
@@ -122,5 +171,11 @@ class Game:
 
     def QuitGame(self):
         pass
-test = Menu()
-test.DisplayMainMenu()
+test_palayer = Player()
+test_Board = Board()
+test_menu = Menu()
+test_Game = Game()
+
+print(test_Board.DisplayBoard())
+
+print(test_Board.DisplayBoard())
