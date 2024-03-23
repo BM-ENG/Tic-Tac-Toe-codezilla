@@ -1,9 +1,4 @@
-import inquirer
-questions = [
-  inquirer.Checkbox('interests',
-                    message="What are you interested in?",
-                    choices=['Computers', 'Books', 'Science', 'Nature', 'Fantasy', 'History'],
-                    ),
-]
-answers = inquirer.prompt(questions)
-print(answers)
+help = 0
+if (help := help+1 ) or (help := help-1 ):
+    print(True)
+print(help)
