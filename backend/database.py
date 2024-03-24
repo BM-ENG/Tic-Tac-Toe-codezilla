@@ -21,7 +21,7 @@ class Main:
 
 
     def MainGame(self):
-        self.game.Sound('intro')
+
         while True:
             choice = [
             List('symbol',
@@ -37,7 +37,7 @@ class Main:
             elif choice["symbol"] == "Logn In":
                 self.signup.Sign_up()
             elif choice["symbol"] == "Guest (Try Game!)":
-                self.game.Sound('intro',stop=True)
+
                 self.game.StarGame()
             else:
                 self.game.WaitAWhiel("Terminate the game active")

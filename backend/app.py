@@ -112,11 +112,11 @@ class Menu:
 class Board:
     BOARD:str = """
 
-                 ⁣1 ❕2 ❕3
+                 ⁣1 ❕ 2 ❕3
                  ➖➕➖➕➖
-                 6 ❕⁣5 ❕4
+                 6 ❕⁣ 5 ❕4
                  ➖➕➖➕➖
-                 7 ❕8 ❕9
+                 7 ❕ 8 ❕9
 
     """
     #
@@ -154,6 +154,17 @@ class Board:
         print(self.board)
 
 
+    def TimerGame(self,t):
+        while t:
+            mins, secs = divmod(t, 60)
+            timer = '{:02d}:{:02d}'.format(mins, secs)
+            print(chalk.green(timer))
+            sleep(1)
+            t -= 1
+
+
+
+
 
 
 
@@ -173,7 +184,6 @@ class Game:
     def StarGame(self):
         symbol_new = Player().SYMBOL
         while True:
-                self.Sound('intro')
                 self.intro(intro)
                 choice =  self.menu.DisplayMainMenu()
                 self.clear()
@@ -185,7 +195,7 @@ class Game:
                         self.players[1].SYMBOL.remove(symbol_player)
                         self.clear()
                     self.WaitAWhiel("Initializing")
-                    self.Sound("intro",stop=True)
+
                     self.PlayTurn()
                 else:
                     return self.WaitAWhiel("Terminate the game active")
@@ -208,21 +218,17 @@ class Game:
     def PlayTurn(self):
 
         for _ in range(9):
-            self.Sound("time")
+
             self.clear()
             self.intro(intro)
             self.board.DisplayBoard()
-            self.board.UpdateBoard(self.players[self.current_player].symbol,self.players[self.current_player].name)
-            self.Sound("move",loop=1)
+            self.board.UpdateBoard(symbol=self.players[self.current_player].symbol,name_player=self.players[self.current_player].name)
 
             if (self.CheckWin(self.players[self.current_player].name)):
-                self.Sound("Win")
                 return
             self.current_player = 1 - self.current_player
 
             if self.CheckDraw():
-                self.Sound("time",stop=True)
-                self.Sound("Win")
                 self.board.DisplayBoard()
                 return self.WaitAWhiel("Game Over and No Winner (Draw)")
 
@@ -232,16 +238,16 @@ class Game:
     def CheckWin(self,turn:str):
         wins = [
                ["1","2","3"],["4","5","6"],["7","8","9"],
-               ["1","4","7"],["2","5","8"],["3","6","9"],
+               ["1","6","7"],["2","5","8"],["3","4","9"],
                ["1","5","9"],["3","5","7"]
         ]
 
         for win in wins:
-            if (self.board.zone[win[0]] == self.board.zone[win[1]] and self.board.zone[win[1]] == self.board.zone[win[2]]) and (self.board.zone[win[0]] != ""):
+            if ((self.board.zone[win[0]] == self.board.zone[win[1]] and self.board.zone[win[1]] == self.board.zone[win[2]]) and (self.board.zone[win[0]] != "")):
                 self.WaitAWhiel(f"Congratulations {turn} you are a hero ")
                 for position,symbol in self.board.zone.items():
                     if position in win:
-                        self.board.zone.update({position:chalk.green(symbol)})
+                        self.board.zone.update({position:"🎉"})
                 self.board.board = self.board.BOARD
                 for position,symbol in self.board.zone.items():
                     if symbol:
