@@ -1,14 +1,20 @@
+import sys
+from os import name, system,listdir,environ
+environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
-from os import name, system
-from posix import remove
-import types
-from typing_extensions import Counter
+
+from inquirer.render.console import Path
+from pygame import mixer
+
 from inquirer import Text, prompt, List,Checkbox
 from re import match
 from tqdm import tqdm
 from time import sleep
+from simple_chalk import chalk
+from random import choice
 
 intro:str ="""
+
 
 
 ▀█▀ █ █▀▀   ▀█▀ ▄▀█ █▀▀   ▀█▀ █▀█ █▀▀
@@ -156,16 +162,18 @@ class Board:
 
 
 
+
 class Game:
     def __init__(self) -> None:
         self.board = Board()
         self.players = [Player(),Player()]
         self.menu = Menu()
         self.current_player = 0
+
     def StarGame(self):
         symbol_new = Player().SYMBOL
         while True:
-
+                self.Sound('intro')
                 self.intro(intro)
                 choice =  self.menu.DisplayMainMenu()
                 self.clear()
@@ -177,6 +185,7 @@ class Game:
                         self.players[1].SYMBOL.remove(symbol_player)
                         self.clear()
                     self.WaitAWhiel("Initializing")
+                    self.Sound("intro",stop=True)
                     self.PlayTurn()
                 else:
                     return self.WaitAWhiel("Terminate the game active")
@@ -197,38 +206,51 @@ class Game:
 
 
     def PlayTurn(self):
+
         for _ in range(9):
+            self.Sound("time")
             self.clear()
             self.intro(intro)
             self.board.DisplayBoard()
             self.board.UpdateBoard(self.players[self.current_player].symbol,self.players[self.current_player].name)
+            self.Sound("move",loop=1)
+
+            if (self.CheckWin(self.players[self.current_player].name)):
+                self.Sound("Win")
+                return
             self.current_player = 1 - self.current_player
-            # if self.CheckWin():
-            #     return self.WaitAWhiel("Found Winner")
+
             if self.CheckDraw():
+                self.Sound("time",stop=True)
+                self.Sound("Win")
                 self.board.DisplayBoard()
                 return self.WaitAWhiel("Game Over and No Winner (Draw)")
 
 
 
 
-    def CheckWin(self):
-        help =  1
-        counter = 1
-        range_help = 3
-        for i in range(1,5):
-            for _ in range(range_help):
-                if (self.board.zone[str(help)]) == (self.board.zone[(str(help:= help+i))]) and (self.board.zone[(str(help))]) == (self.board.zone[(str(help:= help+i))]):
-                    return True
-                help += counter
-            help =  1
-            counter += 1
-            if i == 1 or i == 3:
-                range_help = 1
-                if i == 1:
-                    help = 3
-                continue
-            range_help = 3
+    def CheckWin(self,turn:str):
+        wins = [
+               ["1","2","3"],["4","5","6"],["7","8","9"],
+               ["1","4","7"],["2","5","8"],["3","6","9"],
+               ["1","5","9"],["3","5","7"]
+        ]
+
+        for win in wins:
+            if (self.board.zone[win[0]] == self.board.zone[win[1]] and self.board.zone[win[1]] == self.board.zone[win[2]]) and (self.board.zone[win[0]] != ""):
+                self.WaitAWhiel(f"Congratulations {turn} you are a hero ")
+                for position,symbol in self.board.zone.items():
+                    if position in win:
+                        self.board.zone.update({position:chalk.green(symbol)})
+                self.board.board = self.board.BOARD
+                for position,symbol in self.board.zone.items():
+                    if symbol:
+                        self.board.board=self.board.board.replace(position,symbol)
+                print(self.board.board)
+                return True
+        return False
+
+
 
 
 
@@ -252,8 +274,24 @@ class Game:
         system("cls") if name=="nt" else system("clear")
     def intro(self,intro_ascii:str):
         print(intro_ascii)
-test_palayer = Player()
-test_Board = Board()
-test_menu = Menu()
-test_Game = Game()
-test_Game.StarGame()
+
+    def Sound(self,sound:str,volume:float=0.5,time:int=True,star=True,stop=False,loop:int=-1)-> None:
+        mixer.init()
+        if stop:
+            mixer.music.stop()
+            return
+        if star:
+
+            path = r"/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/sound"
+            random_sound = choice(listdir(rf"{path}/{sound}"))
+            mixer.music.load(rf'{path}/{sound}/{random_sound}')
+            mixer.music.set_volume(volume)
+            mixer.music.play(loop)
+
+
+
+# test_palayer = Player()
+# test_Board = Board()
+# test_menu = Menu()
+# test_Game = Game()
+# test_Game.StarGame()
