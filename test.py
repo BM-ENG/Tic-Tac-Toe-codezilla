@@ -84,19 +84,29 @@
 # # Call the function to send the email
 # send_email()
 # import the time module
+# import firebase_admin
+# from firebase_admin import credentials,firestore
+# from google.cloud.firestore_v1 import collection
+# from google.cloud.firestore_v1.base_query import FieldFilter
+# cred = credentials.Certificate("/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/info_token_db.json")
+# firebase_admin.initialize_app(cred,{'databaseURL':'https://tic-tac-toe-codezilla-default-rtdb.firebaseio.com/'})
+# db = firestore.client()
+# data = {}
+# collection = db.collection("Players").where(filter=FieldFilter("UserName", "==", "ali")).get()
+# for doc in docs:
+#     print(f"{doc.id} => {doc.to_dict()}")
+# import inquirer
+# from inquirer.themes import GreenPassion
+# import inquirer
+# q = [
+#     inquirer.Text("name", message="Whats your name?", default="No one"),
+#     inquirer.List("jon", message="Does Jon Snow know?", choices=["yes", "no"], default="no"),
+#     inquirer.Checkbox(
+#         "kill_list", message="Who you want to kill?", choices=["Cersei", "Littlefinger", "The Mountain"]
+#     ),
+# ]
 
-from simple_chalk import chalk
-# define the countdown func.
-# import the time module
-from time import sleep
-
-# define the countdown func.
-def countdown_timer(seconds):
-    while seconds > 0:
-        print(f"Time remaining: {seconds} seconds")
-        sleep(1)  # Delay for 1 second
-        seconds -= 1
-
-    print("Time's up!")
-
-countdown_timer(60)
+# inquirer.prompt(q, theme=GreenPassion())
+#
+test = [{'ali':5}]
+print(*test)

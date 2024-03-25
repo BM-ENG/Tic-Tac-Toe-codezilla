@@ -1,3 +1,4 @@
+
 import sys
 from os import name, system,listdir,environ
 environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
@@ -66,13 +67,22 @@ class Menu:
     def __init__(self) -> None:
         self.time = 5
 
-    def DisplayMainMenu(self):
-        main = [
-          List('main',
-                        message="Welcome in game TIC TAC TOE",
-                        choices=["Start Game","Setting Time","Quit Game"],
-                    )
-                ]
+    def DisplayMainMenu(self,active=False):
+        if active:
+            main = [
+            List('main',
+                            message="Welcome in game TIC TAC TOE",
+                            choices=["Start Game","Setting Time","Show information","Show archive","Logout"],
+                        )
+                    ]
+        else:
+
+            main = [
+            List('main',
+                            message="Welcome in game TIC TAC TOE",
+                            choices=["Start Game","Setting Time","Back"],
+                        )
+                    ]
         choice = prompt(main)
         if choice["main"] == "Setting Time":
             time = [
@@ -85,6 +95,10 @@ class Menu:
             self.time = sum(choice_itme["Time"])
             return prompt(main)['main']
         return choice['main']
+
+    def ShowInformation(self,data):
+        for type, data in (data[0]).items():
+            print(f"{chalk.green(type)}:{chalk.white(data)} ")
 
 
 
@@ -181,11 +195,14 @@ class Game:
         self.menu = Menu()
         self.current_player = 0
 
-    def StarGame(self):
+
+
+
+    def StarGame(self,active=False,data=False):
         symbol_new = Player().SYMBOL
         while True:
                 self.intro(intro)
-                choice =  self.menu.DisplayMainMenu()
+                choice =  self.menu.DisplayMainMenu(active)
                 self.clear()
                 if choice == "Start Game":
                     for player in self.players:
@@ -195,10 +212,16 @@ class Game:
                         self.players[1].SYMBOL.remove(symbol_player)
                         self.clear()
                     self.WaitAWhiel("Initializing")
-
                     self.PlayTurn()
+                elif choice == "Show information":
+                    self.menu.ShowInformation(data)
+                    continue
+
+                elif choice == "Show archive":
+                  pass
+
                 else:
-                    return self.WaitAWhiel("Terminate the game active")
+                    return self.WaitAWhiel("Back to start menu active")
                 while True:
                     choice_after = self.menu.DisplayEndMenu()
                     if choice_after == "Restart Game":
@@ -225,10 +248,12 @@ class Game:
             self.board.UpdateBoard(symbol=self.players[self.current_player].symbol,name_player=self.players[self.current_player].name)
 
             if (self.CheckWin(self.players[self.current_player].name)):
+                self.login.ArchiveUpdate(winner=self.players[self.current_player].name,loser=self.players[1 - self.current_player].name,draw=False)
                 return
             self.current_player = 1 - self.current_player
 
             if self.CheckDraw():
+                self.login.ArchiveUpdate(winner=self.players[0].name,loser=self.players[1].name,draw=True)
                 self.board.DisplayBoard()
                 return self.WaitAWhiel("Game Over and No Winner (Draw)")
 
@@ -288,9 +313,9 @@ class Game:
             return
         if star:
 
-            path = r"/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/sound"
-            random_sound = choice(listdir(rf"{path}/{sound}"))
-            mixer.music.load(rf'{path}/{sound}/{random_sound}')
+            path = "/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/sound"
+            random_sound = choice(listdir(f"{path}/{sound}"))
+            mixer.music.load(f'{path}/{sound}/{random_sound}')
             mixer.music.set_volume(volume)
             mixer.music.play(loop)
 
