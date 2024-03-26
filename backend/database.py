@@ -21,6 +21,7 @@ from string import punctuation ,ascii_letters ,digits
 cred = credentials.Certificate("/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/info_token_db.json")
 firebase_admin.initialize_app(cred,{'databaseURL':'https://tic-tac-toe-codezilla-default-rtdb.firebaseio.com/'})
 db = firestore.client()
+
 class Main:
     def __init__(self) -> None:
         self.signup = SignUp()

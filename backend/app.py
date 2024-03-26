@@ -9,7 +9,7 @@ from pygame import mixer
 from datetime import datetime
 from inquirer import Text, prompt, List,Checkbox
 from re import match
-from tqdm import tqdm
+from tqdm import tqdm,trange
 from time import sleep
 from simple_chalk import chalk
 from random import choice
@@ -323,8 +323,8 @@ class Game:
         return self.menu.DisplayMainMenu()
 
     def WaitAWhiel(self, message:str):
-        print(message)
-        return [sleep(0.01) for _ in tqdm(range(1,100))]
+
+        return [sleep(0.01) for _ in trange(50,desc=chalk.green(message))]
     def clear(self)-> None:
         system("cls") if name=="nt" else system("clear")
     def intro(self,intro_ascii:str):
