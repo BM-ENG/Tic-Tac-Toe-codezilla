@@ -14,26 +14,26 @@ Tic-Tac-Toe Codezilla is a command-line based game where two players take turns 
 
 ## How to Run
 
-activate your virtual environment
-
-```bash
-source env/bin/activate
-```
-
 1. Clone the repository:
 
    ```bash
    git clone https://github.com/hikodz/Tic-Tac-Toe-codezilla.git
    ```
 
-2. Navigate to the project directory:
+2. activate your virtual environment
+
+   ```bash
+   source env/bin/activate
+   ```
+
+3. Navigate to the project directory:
 
    ```bash
    cd Tic-Tac-Toe-codezilla
 
    ```
 
-3. Run the game:
+4. Run the game:
 
    ```bash
     python run.py
