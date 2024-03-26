@@ -87,7 +87,7 @@ class Menu:
         if choice["main"] == "Setting Time":
             time = [
               Checkbox('Time',
-                                message="Enter space to choose time long in game",
+                                message="Enter space to choose time you can merge time",
                                 choices=Menu.TIME,
                                 ),
             ]
