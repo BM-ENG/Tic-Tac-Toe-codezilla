@@ -107,6 +107,19 @@
 # ]
 
 # inquirer.prompt(q, theme=GreenPassion())
-#
-test = [{'ali':5}]
-print(*test)
+devBio = {
+  "name": "Ihechikara",
+  "age": 500,
+  "language": "Python"
+}
+
+tools = {
+  "dev environment": "JupyterLab",
+  "os": "Windows",
+  "visualization": "Matplotlib"
+}
+
+merged_bio = { **devBio, **tools}
+
+print(merged_bio)
+# {'name': 'Ihechikara', 'age': 500, 'language': 'Python', 'dev environment': 'JupyterLab', 'os': 'Windows', 'visualization': 'Matplotlib'}

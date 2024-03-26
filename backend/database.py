@@ -34,6 +34,7 @@ class Main:
 
 
         while True:
+            self.game.Sound("intro")
 
             choice = [
             List('choice',
@@ -52,7 +53,8 @@ class Main:
                 if status_login:
                     print(chalk.green(f'Welcome Back {status_login[0]["UserName"]}'))
                     self.information = status_login
-                    self.game.StarGame(active=True,data = self.information)
+                    data_archive =self.game.StarGame(active=True,data = self.information)
+                    self.ArchiveUpdate(data_archive)
                     self.information = None
                     continue
                 print(chalk.red("Please check your username or password"))
@@ -71,15 +73,9 @@ class Main:
 
 
 
-    def ArchiveUpdate(self,winner,loser,draw=False):
-        now = datetime.now()
-        if draw:
-            self.information[0]["GameArchive"][now.strftime("%d/%m/%Y %H:%M:%S")] = f"A tie between  {winner} and {loser}"
-        else:
+    def ArchiveUpdate(self,new_data):
 
-            self.information[0]["GameArchive"][now.strftime("%d/%m/%Y %H:%M:%S")] = f"the winner was {winner} and the loser {loser}"
-
-        db.collection("Players").document(self.information[0]['UserName']).set(self.information[0])
+        db.collection("Players").document(new_data[0]['UserName']).set(new_data[0])
 
 
 class SignUp:
@@ -87,7 +83,7 @@ class SignUp:
 
 
         info = [
-            Text('FullName', message="Please enter full name",validate=lambda _, x: match(r'^[a-zA-Z]+$', x)),
+            Text('FullName', message="Please enter full name",validate=lambda _, x: match(r'^[a-zA-Z ]+$', x)),
             Text('UserName', message="Please enter username",validate=lambda _, x: match(r'^[a-zA-Z0-9]+$', x)),
             Text('Email', message="Please enter your email",validate=lambda _, x: match(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+', x),default="example@gmail.com"),
             Text('Password', message="Please enter password",validate=lambda _, x: match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$', x),default=self.RandomPassword())
@@ -110,6 +106,8 @@ class SignUp:
 
 
 class LognIn:
+    def __init__(self) -> None:
+        self.data = {}
     def Logn_in(self):
 
 
@@ -133,5 +131,9 @@ class LognIn:
         convert_data = [data.to_dict()  for data in status ]
         if convert_data:
             if convert_data[0]["Password"] == password:
+                self.data = convert_data
                 return convert_data
         return False
+    def ArchiveUpdate(self,data_archive,data):
+        data[0]["GameArchive"].update(data_archive)
+        db.collection("Players").document(data[0]['UserName']).set(data[0])

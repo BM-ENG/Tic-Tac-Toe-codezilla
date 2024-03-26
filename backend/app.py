@@ -6,7 +6,7 @@ environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 from inquirer.render.console import Path
 from pygame import mixer
-
+from datetime import datetime
 from inquirer import Text, prompt, List,Checkbox
 from re import match
 from tqdm import tqdm
@@ -72,7 +72,7 @@ class Menu:
             main = [
             List('main',
                             message="Welcome in game TIC TAC TOE",
-                            choices=["Start Game","Setting Time","Show information","Show archive","Logout"],
+                            choices=["Start Game","Setting Time","Show information","Show archive","Board saved","Logout"],
                         )
                     ]
         else:
@@ -98,7 +98,18 @@ class Menu:
 
     def ShowInformation(self,data):
         for type, data in (data[0]).items():
-            print(f"{chalk.green(type)}:{chalk.white(data)} ")
+            print(f"{chalk.green(type)}:{chalk.white(len(data) if (type == "GameArchive" or type == "BoardArchive") else data)} ")
+
+    def ShowArchive(self,data):
+            if data[0]["GameArchive"]:
+                for time, data in (data[0]["GameArchive"]).items():
+                    print(f"{chalk.green(time)}:{chalk.white(data)}")
+            else:
+                print(chalk.red("You haven't played games yet!!"))
+
+
+
+
 
 
 
@@ -194,11 +205,16 @@ class Game:
         self.players = [Player(),Player()]
         self.menu = Menu()
         self.current_player = 0
+        self.record_game = {}
+        self.data = None
 
 
 
 
     def StarGame(self,active=False,data=False):
+
+        self.data = data
+
         symbol_new = Player().SYMBOL
         while True:
                 self.intro(intro)
@@ -218,10 +234,16 @@ class Game:
                     continue
 
                 elif choice == "Show archive":
-                  pass
+                    self.menu.ShowArchive(self.data)
+                    continue
+
+                elif choice == "Board saved":
+                    print(chalk.red("this feature in not yet available !!"))
+                    continue
 
                 else:
-                    return self.WaitAWhiel("Back to start menu active")
+                     self.WaitAWhiel("Back to start menu active")
+                     return self.data
                 while True:
                     choice_after = self.menu.DisplayEndMenu()
                     if choice_after == "Restart Game":
@@ -230,6 +252,8 @@ class Game:
                         self.board.ResetBoard()
                         self.PlayTurn()
                     else:
+                        self.data[0]["GameArchive"]= {**self.data[0]["GameArchive"],**self.record_game}
+                        self.record_game = {}
                         self.board.ResetBoard()
                         for player in self.players:
                             player.SYMBOL = ["✘","⭕","💣","🔲","🌀"]
@@ -248,12 +272,12 @@ class Game:
             self.board.UpdateBoard(symbol=self.players[self.current_player].symbol,name_player=self.players[self.current_player].name)
 
             if (self.CheckWin(self.players[self.current_player].name)):
-                self.login.ArchiveUpdate(winner=self.players[self.current_player].name,loser=self.players[1 - self.current_player].name,draw=False)
+                self.RocordGame(winner=self.players[self.current_player].name,loser=self.players[1 - self.current_player].name,draw=False)
                 return
             self.current_player = 1 - self.current_player
 
             if self.CheckDraw():
-                self.login.ArchiveUpdate(winner=self.players[0].name,loser=self.players[1].name,draw=True)
+                self.RocordGame(winner=self.players[0].name,loser=self.players[1].name,draw=True)
                 self.board.DisplayBoard()
                 return self.WaitAWhiel("Game Over and No Winner (Draw)")
 
@@ -315,14 +339,14 @@ class Game:
 
             path = "/Users/HikoDz/Desktop/Tic-Tac-Toe-codezilla/backend/sound"
             random_sound = choice(listdir(f"{path}/{sound}"))
-            mixer.music.load(f'{path}/{sound}/{random_sound}')
+            mixer.music.load(f'{path}/{sound}/{random_sound}',namehint="mp3")
             mixer.music.set_volume(volume)
             mixer.music.play(loop)
 
+    def RocordGame(self,winner,loser,draw=False):
+        now = datetime.now()
+        if draw:
+            self.record_game[now.strftime("%d/%m/%Y %H:%M:%S")] = f"A tie between  {winner} and {loser}"
+        else:
 
-
-# test_palayer = Player()
-# test_Board = Board()
-# test_menu = Menu()
-# test_Game = Game()
-# test_Game.StarGame()
+            self.record_game[now.strftime("%d/%m/%Y %H:%M:%S")] = f"the winner was {winner} and the loser {loser}"
