@@ -139,11 +139,11 @@ class Menu:
 class Board:
     BOARD:str = """
 
-                 ⁣1 ❕ 2 ❕3
-                 ➖➕➖➕➖
-                 6 ❕⁣ 5 ❕4
-                 ➖➕➖➕➖
-                 7 ❕ 8 ❕9
+                 ⁣1  ❕ 2 ❕ 3
+                 ➖ ➕ ➖➕➖
+                 6  ❕ ⁣5 ❕ 4
+                 ➖ ➕ ➖➕➖
+                 7  ❕ 8 ❕ 9
 
     """
     # this method will be used to initialize the board
@@ -257,7 +257,8 @@ class Game:
                         self.board.ResetBoard()
                         self.PlayTurn()
                     else:
-                        self.data[0]["GameArchive"]= {**self.data[0]["GameArchive"],**self.record_game}
+                        if active:
+                            self.data[0]["GameArchive"]= {**self.data[0]["GameArchive"],**self.record_game}
                         self.record_game = {}
                         self.board.ResetBoard()
                         for player in self.players:
