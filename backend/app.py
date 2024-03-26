@@ -1,9 +1,9 @@
-
+# here we will create the main game
 import sys
 from os import name, system,listdir,environ
 environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
-
+# all the imports
 from inquirer.render.console import Path
 from pygame import mixer
 from datetime import datetime
@@ -24,7 +24,7 @@ intro:str ="""
 
 
 """
-
+# this claas player will be used to create the player
 class Player:
     SYMBOL:list[str] = ["✘","⭕","💣","🔲","🌀"]
 
@@ -62,6 +62,7 @@ class Player:
 
 
 
+# class game will be used to create the game
 class Menu:
     TIME = [5,10,15]
     def __init__(self) -> None:
@@ -134,6 +135,7 @@ class Menu:
 
 
 
+# claas board will be used to create the board
 class Board:
     BOARD:str = """
 
@@ -144,7 +146,7 @@ class Board:
                  7 ❕ 8 ❕9
 
     """
-    #
+    # this method will be used to initialize the board
     def __init__(self) -> None:
         self.zone: dict[str,str] = {
                       "1":"","2":"","3":"",
@@ -152,8 +154,9 @@ class Board:
                       "7":"","8":"","9":""
                      }
         self.board:str =self.BOARD
-    #
+    # this method will be used to update the board
     def UpdateBoard(self,symbol:str,name_player:str)-> None:
+
 
         choice = [
             List('position',
@@ -169,12 +172,12 @@ class Board:
                 self.board=self.board.replace(position,symbol)
 
 
-    #
+    #   this method will be used to check if the game is over
     def ResetBoard(self)-> None:
         self.zone = {str(i):"" for i in range(1,10)}
         self.board = self.BOARD
 
-    #
+    # this method will be used to check if the game is over
     def DisplayBoard(self)-> None:
         print(self.board)
 
@@ -186,6 +189,8 @@ class Board:
             print(chalk.green(timer))
             sleep(1)
             t -= 1
+
+
 
 
 
