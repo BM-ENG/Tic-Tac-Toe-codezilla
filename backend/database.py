@@ -34,7 +34,6 @@ class Main:
 
 
         while True:
-            self.game.Sound("intro")
 
             choice = [
             List('choice',
